@@ -1,13 +1,13 @@
 import torch  
-import gradio as gr  #import Gradio to build the web interface
+import gradio as gr  #import gradio to build the web interface
 from PIL import Image  # import PIL to handle image conversion
-from transformers import (  # import Hugging Face Transformers components
+from transformers import (  # import hugging face transformers components
     BlipProcessor,  # processor that handles input preprocessing for BLIP models
     BlipForConditionalGeneration,  # BLIP model variant used for image captioning
     BlipForQuestionAnswering,  # BLIP model variant used for visual question answering
 )
 
-# Models!
+# Models--
 # Captioning
 caption_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")  
 caption_model     = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base") 
@@ -21,15 +21,13 @@ def analyze_image(img, open_question, binary_question):
     if img is None:  
         return "No image provided.", "", ""  
 
-    img_pil = Image.fromarray(img).convert("RGB")  # convert the NumPy array from Gradio into a PIL RGB image
-
-    # 1. Automatic caption
-    cap_inputs = caption_processor(img_pil, return_tensors="pt")  # preprocess the image for the captioning model and return PyTorch tensors
+    img_pil = Image.fromarray(img).convert("RGB")  # it converts the image into a format the model can understand (PIL Image in RGB mode)
+    cap_inputs = caption_processor(img_pil, return_tensors="pt") # It preprocesses the image for the captioning model, converting it into a tensor format suitable for input to the model
     with torch.no_grad():  # disable gradient computation to save memory during inference
         cap_ids = caption_model.generate(**cap_inputs, max_new_tokens=50)  
     caption = caption_processor.decode(cap_ids[0], skip_special_tokens=True)  
 
-    # 2. Open question — uses VQA model
+    # 2) Open question — uses VQA model
     open_answer = ""  
     if open_question.strip():  # run VQA if the user actually typed a question (ignoring whitespace)
         vqa_inputs = vqa_processor(img_pil, open_question, return_tensors="pt") 
@@ -37,7 +35,7 @@ def analyze_image(img, open_question, binary_question):
             vqa_ids = vqa_model.generate(**vqa_inputs, max_new_tokens=50)  
         open_answer = vqa_processor.decode(vqa_ids[0], skip_special_tokens=True)  
 
-    # 3. Binary question — uses VQA model and converts to 0/1
+    # 3) Binary question — uses VQA model and converts to 0/1
     binary_result = ""  # initialize the binary result as an empty string
     if binary_question.strip():  
         bin_inputs = vqa_processor(img_pil, binary_question, return_tensors="pt")  # preprocess the image and binary question for the VQA model
@@ -47,6 +45,9 @@ def analyze_image(img, open_question, binary_question):
         binary_result = "1  (Yes)" if "yes" in binary_answer.lower() else "0  (No)"  # Map the answer to 1 if it contains "yes", otherwise map to 0
 
     return caption, open_answer, binary_result  #return all three results to be displayed in the Gradio interface
+
+
+
 
 
 #Gradio Interface!
