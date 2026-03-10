@@ -27,7 +27,7 @@ def analyze_image(img, open_question, binary_question):
         cap_ids = caption_model.generate(**cap_inputs, max_new_tokens=50)  
     caption = caption_processor.decode(cap_ids[0], skip_special_tokens=True)  
 
-    # 2) Open question — uses VQA model
+    # 2) Open question - uses VQA model
     open_answer = ""  
     if open_question.strip():  # run VQA if the user actually typed a question (ignoring whitespace)
         vqa_inputs = vqa_processor(img_pil, open_question, return_tensors="pt") 
@@ -35,7 +35,7 @@ def analyze_image(img, open_question, binary_question):
             vqa_ids = vqa_model.generate(**vqa_inputs, max_new_tokens=50)  
         open_answer = vqa_processor.decode(vqa_ids[0], skip_special_tokens=True)  
 
-    # 3) Binary question — uses VQA model and converts to 0/1
+    # 3) Binary question - uses VQA model and converts to 0/1
     binary_result = ""  # initialize the binary result as an empty string
     if binary_question.strip():  
         bin_inputs = vqa_processor(img_pil, binary_question, return_tensors="pt")  # preprocess the image and binary question for the VQA model
@@ -65,12 +65,12 @@ with gr.Blocks(title="BLIP Image Analyzer") as demo:
 }
 """  # define the custom CSS
 
-with gr.Blocks(css=CSS, title="BLIP Image Analyzer") as demo: 
+with gr.Blocks(css=CSS, title="BLIP - Image Analyzer") as demo: 
 
     gr.Markdown(  
         """
         # BLIP Image Analyzer
-        **Captioning · VQA · Binary Classification** — no model training required
+        **Captioning - VQA - Binary Classification**
         """
     )
 

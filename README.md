@@ -1,11 +1,6 @@
-
-# Image Captioning English
-
-This project creates captions for images in English.
-
 ## How to Run
 
-1. Make sure you have Python 3.8 or newer installed. You can get it from [python.org](https://www.python.org/downloads/).
+1. Make sure you have Python 3.8 or newer installed.
 
 2. Open a terminal in the project folder.
 
@@ -33,5 +28,3 @@ This project creates captions for images in English.
 - If you have problems, check the messages in the terminal.
 
 ---
-
-If you need help, contact the owner of this repository.
